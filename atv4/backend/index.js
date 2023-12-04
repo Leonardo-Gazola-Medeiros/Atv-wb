@@ -121,18 +121,20 @@ app.delete("/clientes/excluir/:id", (req, res) => {
 
 ///// FUNÇÃO PARA ATUALIZAR CLIENTES
 
-app.post("/clientes/atualizar", (req, res) => {
-	const { nome, sobrenome, genero, cpf, data_emissao } = req.body;
+app.post("/clientes/atualizar/:id", (req, res) => {
+	const {id, nome, sobrenome, genero, cpf, data_emissao } = req.body;
 
 	con.connect(function (err) {
 		if (err) throw err;
-		console.log("Dados solicitados para atualizar cliente");
+		console.log("Dados solicitados para atualizar cliente", req.body);
 
 		var sql = 'UPDATE cliente SET nome = ?, sobrenome = ?, genero = ?, cpf = ?, data_emissao = ? WHERE id = ? ';
-		con.query(sql, [nome, sobrenome, genero, cpf, data_emissao], function (err, result, fields) {
-			if (err) throw err;
+		con.query(sql, [nome, sobrenome, genero, cpf, data_emissao, id], function (err, result, fields) {
+			if (err) throw err
+			else {console.log(`Atualização Efetuada!`)};
 			res.json(result);
 		});
+		
 	});
 });
 

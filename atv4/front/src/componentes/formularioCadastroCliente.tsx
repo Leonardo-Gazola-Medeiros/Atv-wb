@@ -1,18 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import 'materialize-css/dist/css/materialize.min.css';
 
 type Props = {
     tema: string;
 };
 
+type Cliente = {
+    id: number;
+    nome: string;
+    sobrenome: string;
+    genero: string;
+    cpf: string;
+    data_emissao: string; // ou o tipo correto para a data
+};
+
 const FormularioCadastroCliente: React.FC<Props> = ({ tema }) => {
     const [cliente, setCliente] = useState({
+        id: "",
         nome: "",
         sobrenome: "",
         genero: "",
         cpf: "",
         dataEmissao: "",
     });
+
+    const [clientes, setClientes] = useState<Cliente[]>([]);
+
+    const fetchClientes = () => {
+        fetch("http://localhost:3001/clientes")
+          .then((response) => response.json())
+          .then((data) => setClientes(data))
+          .catch((error) => console.error("Erro ao buscar clientes: ", error));
+      };
+
+    useEffect(() => {
+    fetchClientes();
+    }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
