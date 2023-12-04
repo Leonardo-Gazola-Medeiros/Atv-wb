@@ -6,6 +6,7 @@ type Props = {
 };
 
 type Cliente = {
+    id: number;
     nome: string;
     sobrenome: string;
     genero: string;
@@ -17,9 +18,6 @@ const ListaCliente: React.FC<Props> = ({ tema }) => {
     const estilo = `collection-item ${tema}`;
     const [clientes, setClientes] = useState<Cliente[]>([]);
 
-    const posicaoID = window.location.href.indexOf("id=");
-    const id = window.location.href.substring(posicaoID + 3);
-
     useEffect(() => {
         fetch(`http://localhost:3001/clientes/`)
             .then((response) => response.json())
@@ -27,11 +25,26 @@ const ListaCliente: React.FC<Props> = ({ tema }) => {
             .catch((error) => console.error("Erro ao buscar informações de usuário: ", error));
     }, []); // Adicionando dependência vazia
 
+    const excluirCliente = (id: number) => {
+        fetch(`http://localhost:3001/clientes/excluir/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+                alert("Exclusão bem sucedida!");
+            })
+            .catch((error) => console.error("Erro ao excluir cliente: ", error));
+    };
+
     return (
         <div className="collection">
             {clientes.map((cliente, index) => (
                 <p key={index} className={estilo}>
-                    {cliente.nome}
+                    {cliente.nome} <button onClick={() => excluirCliente(cliente.id)}>Excluir</button>
                 </p>
             ))}
         </div>

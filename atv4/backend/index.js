@@ -58,7 +58,7 @@ app.get("/clientes", (req, res) => {
 		if (err) throw err;
 		console.log("Conectado Clientes");
 
-		var sql = 'SELECT nome, genero, cpf, data_emissao FROM cliente';
+		var sql = 'SELECT id,nome, genero, cpf, data_emissao FROM cliente';
 		con.query(sql, function (err, result, fields) {
 			if (err) throw err;
 			res.json(result);
@@ -105,18 +105,18 @@ app.post("/clientes/cadastrar", (req, res) => {
 
 ///// FUNÇÃO PARA EXCLUIR CLIENTES
 
-app.post("/clientes/excluir", (req, res) => {
-	const {id} = req.body;
-	con.connect(function (err) {
-		if (err) throw err;
-		console.log("Dados solicitados para excluir cliente");
+app.delete("/clientes/excluir/:id", (req, res) => {
+    const { id } = req.params; // Corrigindo para pegar o id dos parâmetros da URL
+    con.connect(function (err) {
+        if (err) throw err;
+        console.log("Dados solicitados para excluir cliente");
 
-		var sql = 'DELETE FROM cliente WHERE id = ?';
-		con.query(sql, id, req.url.substring(4), function (err, result, fields) {
-			if (err) throw err;
-			res.json(result);
-		});
-	});
+        var sql = 'DELETE FROM cliente WHERE id = ?';
+        con.query(sql, id, function (err, result, fields) {
+            if (err) throw err;
+            res.json(result);
+        });
+    });
 });
 
 ///// FUNÇÃO PARA ATUALIZAR CLIENTES
